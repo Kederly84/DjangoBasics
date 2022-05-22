@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView
-import json
+
+from mainapp.models import News
 
 
 class ContactsView(TemplateView):
@@ -50,39 +51,9 @@ class LoginView(TemplateView):
 class NewsView(TemplateView):
     template_name = 'mainapp/news.html'
 
-
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        with open('mainapp/some_data.json', 'r') as read_file:
-            data = json.load(read_file)
-        arr = []
-        for key in data:
-            arr.append(data[key])
-        context_data['object_list'] = arr
-
-        # context_data['object_list'] = [
-        #     {
-        #         'title': 'Новость',
-        #         'preview': 'Превью к новости',
-        #         'date': datetime.now()
-        #     }, {
-        #         'title': 'Новость',
-        #         'preview': 'Превью к новости',
-        #         'date': datetime.now()
-        #     }, {
-        #         'title': 'Новость',
-        #         'preview': 'Превью к новости',
-        #         'date': datetime.now()
-        #     }, {
-        #         'title': 'Новость',
-        #         'preview': 'Превью к новости',
-        #         'date': datetime.now()
-        #     }, {
-        #         'title': 'Новость',
-        #         'preview': 'Превью к новости',
-        #         'date': datetime.now()
-        #     }
-        # ]
+        context_data['object_list'] = News.objects.filter(deleted=False)
         return context_data
 
 
