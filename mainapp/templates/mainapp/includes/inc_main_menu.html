@@ -16,17 +16,28 @@
                 Профиль
             </a>
             <div class="dropdown-menu" aria-labelledby="ddProfile">
-                <a class="dropdown-item" href="#">Редактировать профиль</a>
-                <a class="dropdown-item" href="#">Мои курсы</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Модерация</a>
-                <a class="dropdown-item" href="#">Административный раздел</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Выход</a>
+                {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="{% url 'authapp:edit' %}">Редактировать профиль</a>
+                    <a class="dropdown-item" href="#">Мои курсы</a>
+                    <div class="dropdown-divider"></div>
+                {% endif %}
+                {% if user.is_superuser %}
+                    <a class="dropdown-item" href="#">Модерация</a>
+                    <a class="dropdown-item" href="#">Административный раздел</a>
+                    <div class="dropdown-divider"></div>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="{% url 'authapp:logout' %}">Выйти</a>
+                {% else %}
+                    <a class="dropdown-item" href="{% url 'authapp:login' %}">Войти</a>
+                {% endif %}
             </div>
         </li>
         <li class="nav-item {%  if url_name == 'contacts' %} active {% endif %}">
             <a class="nav-link" href="{% url 'mainapp:contacts' %}">Контакты</a>
+        </li>
+        <li class="nav-link active">
+            {{ user.username }}
         </li>
     </ul>
     <span><a href="#">🇷🇺</a> <i class="fas fa-grip-lines-vertical"></i> <a href="#">🇬🇧</a></span>

@@ -44,10 +44,6 @@ class IndexView(TemplateView):
     template_name = 'mainapp/index.html'
 
 
-class LoginView(TemplateView):
-    template_name = 'mainapp/login.html'
-
-
 class NewsView(TemplateView):
     template_name = 'mainapp/news.html'
 

@@ -11,8 +11,26 @@
 				"database": "/Users/aleksandrmaksimov/Studing/DjangoBasics/db.sqlite3",
 				"url": "jdbc:sqlite:/Users/aleksandrmaksimov/Studing/DjangoBasics/db.sqlite3",
 				"type": "dev",
-				"auth-model": "native",
-				"handlers": {}
+				"auth-model": "native"
+			}
+		}
+	},
+	"network-profiles": {
+		"kederly": {
+			"name": "kederly",
+			"handlers": {
+				"ssh_tunnel": {
+					"type": "TUNNEL",
+					"enabled": true,
+					"save-password": true,
+					"properties": {
+						"host": "192.168.31.122",
+						"port": 22,
+						"authType": "PASSWORD",
+						"implementation": "jsch",
+						"bypassHostVerification": false
+					}
+				}
 			}
 		}
 	},
