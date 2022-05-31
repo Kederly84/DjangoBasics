@@ -1,6 +1,13 @@
-from django.views.generic import TemplateView
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 
-from mainapp.models import News
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+
+from mainapp.forms import CourseFeedbackForm
+from mainapp.models import News, Courses, Lesson, CourseTeachers, CourseFeedback
 
 
 class ContactsView(TemplateView):
@@ -44,18 +51,92 @@ class IndexView(TemplateView):
     template_name = 'mainapp/index.html'
 
 
-class NewsView(TemplateView):
-    template_name = 'mainapp/news.html'
+# class NewsView(TemplateView):
+#     template_name = 'mainapp/news.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context_data = super().get_context_data(**kwargs)
+#         context_data['object_list'] = News.objects.filter(deleted=False)
+#         return context_data
+#
+#
+# class NewsWithPagination(NewsView):
+#
+#     def get_context_data(self, page, **kwargs):
+#         context = super().get_context_data(page=page, **kwargs)
+#         context["page_num"] = page
+#         return context
+
+class NewsView(ListView):
+    model = News
+    paginate_by = 5
+
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted=False)
+
+
+class NewsDetailView(DetailView):
+    model = News
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(News, pk=self.kwargs.get('pk'), deleted=False)
+
+
+class NewsCreateView(PermissionRequiredMixin, CreateView):
+    model = News
+    fields = '__all__'
+    success_url = reverse_lazy('mainapp:news')
+    permission_required = ('mainapp.add_news',)
+
+
+class NewsUpdateView(PermissionRequiredMixin, UpdateView):
+    model = News
+    fields = '__all__'
+    success_url = reverse_lazy('mainapp:news')
+    permission_required = ('mainapp.change_news',)
+
+
+class NewsDeleteView(PermissionRequiredMixin, DeleteView):
+    model = News
+    success_url = reverse_lazy('mainapp:news')
+    permission_required = ('mainapp.delete_news',)
+
+
+class CourseDetailView(TemplateView):
+    template_name = "mainapp/courses_detail.html"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['object_list'] = News.objects.filter(deleted=False)
+        context_data['course_object'] = get_object_or_404(Courses, pk=self.kwargs.get('pk'))
+        context_data['lessons'] = Lesson.objects.filter(course=context_data['course_object'])
+        context_data['teachers'] = CourseTeachers.objects.filter(course=context_data['course_object'])
+        context_data['feedback_list'] = CourseFeedback.objects.filter(course=context_data['course_object'])
+
+        if not self.request.user.is_anonymous:
+            if not CourseFeedback.objects.filter(
+                    course=context_data["course_object"],
+                    user=self.request.user).count():
+                context_data['feedback_form'] = CourseFeedbackForm(
+                    course=context_data['course_object'],
+                    user=self.request.user
+                )
         return context_data
 
 
-class NewsWithPagination(NewsView):
+class CoursesListView(TemplateView):
+    template_name = "mainapp/courses_list.html"
 
-    def get_context_data(self, page, **kwargs):
-        context = super().get_context_data(page=page, **kwargs)
-        context["page_num"] = page
+    def get_context_data(self, **kwargs):
+        context = super(CoursesListView, self).get_context_data(**kwargs)
+        context["objects"] = Courses.objects.all()
         return context
+
+
+class CourseFeedbackFormView(CreateView):
+    model = CourseFeedback
+    form_class = CourseFeedbackForm
+
+    def form_valid(self, form):
+        self.object = form.save()
+        rendered_card = render_to_string('mainapp/includes/feedback_card.html', context={'item': self.object})
+        return JsonResponse({'card': rendered_card})

@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'social_django',
     'mainapp',
     'authapp',
+    'crispy_forms',
+
 ]
 
 MIDDLEWARE = [
@@ -57,7 +59,7 @@ ROOT_URLCONF = 'braniaclms.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -161,3 +163,5 @@ SOCIAL_AUTH_VK_OAUTH2_KEY = '8177771'
 SOCIAL_AUTH_VK_OAUTH2_SECRET = 'v1T7YlUrKjtN897TJDmQ'
 
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
