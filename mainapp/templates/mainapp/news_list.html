@@ -1,5 +1,5 @@
 {% extends 'mainapp/base.html' %}
-
+{% load static crispy_forms_tags cache %}
 
 {% block title %}
     Новости
@@ -10,11 +10,11 @@
             <div class="card-body">
                 <p class="card-text">Текущая страница: {{ page_num }}</p>
             </div>
-            © geekbrains.ru 51
         </div>
     {% endif %}
     <div class="row">
         <div class="col-lg-8">
+        {% cache 600 lessons %}
             {% for item in object_list %}
                 <div class="card my-2">
                     <div class="card-body">
@@ -43,6 +43,7 @@
                     </div>
                 </div>
             {% endfor %}
+        {% endcache %}
         </div>
         <div class="col-lg-4">
             <div class="card my-2 sticky-top">

@@ -4,3 +4,6 @@ __pycache__
 .vscode
 *.pyc
 .dbeaver
+log
+local_settings.py
+email-messages

@@ -26,6 +26,7 @@
                 {% endif %}
                 {% if user.is_superuser %}
                     <a class="dropdown-item" href="{% url 'admin:index' %}">Административный раздел</a>
+                    <a class="dropdown-item" href="{% url 'mainapp:log_view' %}" target="_blank">Лог</a>
                     <div class="dropdown-divider"></div>
                 {% endif %}
                 {% if user.is_authenticated %}
