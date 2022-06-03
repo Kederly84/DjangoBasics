@@ -3,7 +3,6 @@ from mainapp.models import CourseFeedback
 
 
 class CourseFeedbackForm(forms.ModelForm):
-
     class Meta:
         model = CourseFeedback
         fields = ['course', 'user', 'rating', 'feedback']
@@ -18,9 +17,3 @@ class CourseFeedbackForm(forms.ModelForm):
         if course and user:
             self.fields['course'].initial = course.pk
             self.fields['user'].initial = user.pk
-
-
-
-
-
-

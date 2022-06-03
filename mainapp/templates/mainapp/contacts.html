@@ -1,6 +1,6 @@
 {% extends 'mainapp/base.html' %}
 
-{% load mail_to_link %}
+{% load mail_to_link crispy_forms_tags %}
 
 {% block content %}
 
@@ -9,6 +9,13 @@
         <div class="container">
             <h1 class="display-4">Наши контакты</h1>
             <p class="lead">Обязательно свяжитесь с нами! Ваш комфорт - наша забота.</p>
+            <div class="row">
+                <form method="post" class="form-group col-4">
+                    {% csrf_token %}
+                    <textarea class="form-control" name="message_body"></textarea>
+                    <input type="submit" class="btn btn-primary" value="Отправить"/>
+                </form>
+            </div>
         </div>
     </div>
     </p>
