@@ -37,7 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
     'mainapp',
+    'authapp',
+    'crispy_forms',
+
 ]
 
 MIDDLEWARE = [
@@ -55,14 +59,17 @@ ROOT_URLCONF = 'braniaclms.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
+                "django.template.context_processors.media",
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -125,3 +132,36 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
+
+AUTH_USER_MODEL = 'authapp.User'
+
+LOGIN_REDIRECT_URL = 'mainapp:home'
+
+LOGOUT_REDIRECT_URL = 'mainapp:home'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'authapp.auth.EmailBackend',
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.vk.VKOAuth2'
+)
+
+SOCIAL_AUTH_GITHUB_KEY = '886f30fff17b23d1382f'
+
+SOCIAL_AUTH_GITHUB_SECRET = '8bba40107d7c240b73f0dd6781daa143926d6176'
+
+SOCIAL_AUTH_GITHUB_SCOPE = ['email']
+
+SOCIAL_AUTH_VK_OAUTH2_KEY = '8177771'
+
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'v1T7YlUrKjtN897TJDmQ'
+
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"

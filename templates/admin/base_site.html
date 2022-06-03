@@ -1,0 +1,11 @@
+{% extends 'admin/base.html' %}
+{%  load static %}
+
+{% block welcome-msg %}
+    Приветствую!
+    <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+{% endblock %}
+
+{% block branding %}
+    <img src="{% static 'img/logo.png' %}"  alt="logo"/>
+{% endblock %}

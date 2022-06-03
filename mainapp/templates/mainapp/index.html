@@ -123,3 +123,13 @@
         </div>
     </div>
 {% endblock %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            {% if messages %}
+                // Toasts
+                $(".toast").toast({delay: 5000}); $(".toast").toast("show");
+            {% endif %}
+        });
+    </script>
+{% endblock %}

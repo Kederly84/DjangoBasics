@@ -1,7 +1,7 @@
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 
-
-# Create your models here.
 
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
@@ -33,7 +33,7 @@ class News(BaseModel):
 
 class Courses(BaseModel):
     name = models.CharField(max_length=255, verbose_name='Название')
-    description = models.TextField(verbose_name='Нововсть')
+    description = models.TextField(verbose_name='Описание')
     description_as_markdown = models.BooleanField(default=True, verbose_name='Маркдаун')
     cost = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Цена')
     cover = models.CharField(max_length=124, verbose_name='Изображение', default='No image')
@@ -80,3 +80,33 @@ class CourseTeachers(models.Model):
     class Meta:
         verbose_name = 'Препоаватель'
         verbose_name_plural = 'Преподаватели'
+
+
+class CourseFeedback(BaseModel):
+    RAITING_FIVE = 5
+    RAITING_FOUR = 4
+    RAITING_THREE = 3
+    RAITING_TWO = 2
+    RAITING_ONE = 1
+
+    RATINGS = (
+        (RAITING_FIVE, '⭐⭐⭐⭐⭐'),
+        (RAITING_FOUR, '⭐⭐⭐⭐'),
+        (RAITING_THREE, '⭐⭐⭐'),
+        (RAITING_TWO, '⭐⭐'),
+        (RAITING_ONE, '⭐'),
+    )
+
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, verbose_name='Курс')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='Пользователь')
+    feedback = models.TextField(verbose_name='Отзыв', default='Без отзыва')
+    rating = models.PositiveSmallIntegerField(choices=RATINGS, default=RAITING_FIVE, verbose_name='Рейтинг')
+
+    class Meta:
+        verbose_name = 'Рейтинг'
+        verbose_name_plural = 'Рейтинги'
+
+    def __str__(self):
+        return f'Отзыв от {self.user} на курс {self.course}'
+
+

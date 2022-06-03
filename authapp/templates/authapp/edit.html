@@ -1,0 +1,35 @@
+{% extends 'authapp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="row justify-content-center my-2">
+        <div class="row justify-content-center">
+            <div class="col-sm-7 col-md-5 col-lg-4">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="" width="100%">
+                {% else %}
+                    <img src="{{ MEDIA_URL }}avatar.svg" alt="" width="100%">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type=" submit" class="btn btn-primary btn-block">
+            Сохранить
+        </button>
+    </form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            {% if messages %}
+                // Toasts
+                $(".toast").toast({delay: 5000}); $(".toast").toast("show");
+            {% endif %}
+        });
+    </script>
+{% endblock %}
