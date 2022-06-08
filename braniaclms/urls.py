@@ -21,6 +21,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
     path('', RedirectView.as_view(url="home/")),
     path('login/', RedirectView.as_view(url="/authapp/login")),
     path('home/', include('mainapp.urls', namespace='home')),

@@ -59,7 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.locale.LocaleMiddleware'
 ]
 
 ROOT_URLCONF = 'braniaclms.urls'
@@ -189,7 +190,6 @@ LOGGING = {
         },
     },
     "handlers": {
-        # todo: Потом переделать переписать на timerotating для теста
         "file": {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
@@ -208,20 +208,23 @@ LOGGING = {
 CELERY_BROKER_URL = 'amqp://localhost'
 
 # Для глобальной почты не работает. Вопрос почему не уходят письма на внешку?
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_FILE_PATH = "email-messages"
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+#
+# EMAIL_FILE_PATH = "email-messages"
 
 EMAIL_HOST = 'smtp.mail.ru'
 
-EMAIL_PORT = 2525
+EMAIL_PORT = 465
 
 EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
 
 EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
 
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False
 
-EMAIL_USE_SSL = False
+EMAIL_USE_SSL = True
+
+LOCALE_PATHS = [BASE_DIR / 'locale']

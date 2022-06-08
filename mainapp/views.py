@@ -19,7 +19,6 @@ from mainapp.models import News, Courses, Lesson, CourseTeachers, CourseFeedback
 
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -91,7 +90,14 @@ class NewsView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return super().get_queryset().filter(deleted=False)
+        dateFrom = self.request.GET.get('dateFrom')
+        dateTo = self.request.GET.get('dateTo')
+        if dateFrom and dateTo:
+            return super().get_queryset().filter(deleted=False).filter(created__range=(dateFrom, dateTo))
+        elif dateFrom and dateTo is None:
+            return super().get_queryset().filter(deleted=False).filter(created__startswith=dateFrom)
+        else:
+            return super().get_queryset().filter(deleted=False)
 
 
 class NewsDetailView(DetailView):
@@ -130,13 +136,14 @@ class CourseDetailView(TemplateView):
         context_data['lessons'] = Lesson.objects.filter(course=context_data['course_object'])
         context_data['teachers'] = CourseTeachers.objects.filter(course=context_data['course_object'])
         feedback_list_key = f"course_feedback{context_data['course_object'].pk}"
+        print(feedback_list_key)
         cached_feedback_list = cache.get(feedback_list_key)
         if cached_feedback_list is None:
             context_data['feedback_list'] = CourseFeedback.objects.filter(course=context_data['course_object'])
             cache.set(feedback_list_key, context_data['feedback_list'], timeout=600)
         else:
             context_data['feedback_list'] = cached_feedback_list
-
+            print(context_data)
         if not self.request.user.is_anonymous:
             if not CourseFeedback.objects.filter(
                     course=context_data["course_object"],
@@ -193,6 +200,3 @@ class LogDownloadView(UserPassesTestMixin, View):
 
     def get(self, *args, **kwargs):
         return FileResponse(open(settings.LOG_FILE, "rb"))
-
-
-

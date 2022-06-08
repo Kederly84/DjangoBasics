@@ -13,7 +13,7 @@ urlpatterns = [
     path('yandex/', RedirectView.as_view(url='https://yandex.ru/search/', query_string=True), name='yandex'),
 
     # News
-    path('news/', cache_page(600)(views.NewsView.as_view()), name='news'),
+    path('news/', views.NewsView.as_view(), name='news'),
     path('news/add/', views.NewsCreateView.as_view(), name='news_create'),
     path('news/<int:pk>/update/', views.NewsUpdateView.as_view(), name='news_update'),
     path('news/<int:pk>/delete/', views.NewsDeleteView.as_view(), name='news_delete'),
