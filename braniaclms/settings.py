@@ -9,14 +9,14 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from pathlib import Path
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import local_settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR / '.env')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -24,9 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-kag@b)1v9_y-(w*5udgnqmvze_fc^@t&-86mher@91h7v=vbgl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.getenv('DEBUG') == 'True' else False
 
 ALLOWED_HOSTS = ["*"]
+
+ENV_TYPE = os.getenv('ENV_TYPE', 'prod')
 
 if DEBUG:
     INTERNAL_IPS = [
@@ -88,13 +90,21 @@ WSGI_APPLICATION = 'braniaclms.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if ENV_TYPE == 'local':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'lms',
+            'USER': 'postgres'
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -129,9 +139,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+if ENV_TYPE == 'local':
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static',
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -157,15 +170,15 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.vk.VKOAuth2'
 )
 
-SOCIAL_AUTH_GITHUB_KEY = local_settings.SOCIAL_AUTH_GITHUB_KEY
+SOCIAL_AUTH_GITHUB_KEY = os.getenv('GITHUB_KEY')
 
-SOCIAL_AUTH_GITHUB_SECRET = local_settings.SOCIAL_AUTH_GITHUB_SECRET
+SOCIAL_AUTH_GITHUB_SECRET = os.getenv('GITHUB_SECRET')
 
-SOCIAL_AUTH_VK_OAUTH2_KEY = local_settings.SOCIAL_AUTH_VK_OAUTH2_KEY
+SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv('AUTH_VK_OAUTH2_KEY')
 
-SOCIAL_AUTH_VK_OAUTH2_SECRET = local_settings.SOCIAL_AUTH_VK_OAUTH2_SECRET
+SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('AUTH_VK_OAUTH2_SECRET')
 
-SOCIAL_AUTH_VK_OAUTH2_SCOPE = local_settings.SOCIAL_AUTH_VK_OAUTH2_SCOPE
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = os.getenv('AUTH_VK_OAUTH2_SCOPE')
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
@@ -207,8 +220,6 @@ LOGGING = {
 
 CELERY_BROKER_URL = 'amqp://localhost'
 
-# Для глобальной почты не работает. Вопрос почему не уходят письма на внешку?
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
@@ -219,9 +230,9 @@ EMAIL_HOST = 'smtp.mail.ru'
 
 EMAIL_PORT = 465
 
-EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 
-EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 EMAIL_USE_TLS = False
 
