@@ -1,7 +1,7 @@
 from celery import shared_task
 from django.core.mail import send_mail
 
-import local_settings
+import os
 from authapp.models import User
 
 
@@ -16,6 +16,6 @@ def send_feedback_mail(message_body: str, message_from: int = None) -> None:
         subject=f'Feedback from: {user_from}',
         message=message_body,
         recipient_list=['amaksimov744@gmail.com'],
-        from_email=local_settings.EMAIL_HOST_USER,
+        from_email=os.getenv('EMAIL_HOST_USER'),
         fail_silently=False
     )
