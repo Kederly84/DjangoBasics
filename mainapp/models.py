@@ -68,7 +68,7 @@ class CourseTeachers(models.Model):
     name_second = models.CharField(max_length=100, verbose_name='Фамилия')
     day_birth = models.DateField(verbose_name='День рождения')
     course = models.ManyToManyField(Courses)
-    deleted_at = models.BooleanField(default=False, verbose_name='Удалено')
+    deleted = models.BooleanField(default=False, verbose_name='Удалено')
 
     def __str__(self):
         return f'{self.name_first} {self.name_second}'

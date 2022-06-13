@@ -72,7 +72,7 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(CourseTeachers)
 class CourseTeachersAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'day_birth', 'deleted_at')
+    list_display = ('__str__', 'day_birth', 'deleted')
     list_per_page = 10
     list_filter = ('name_first', 'name_second')
     search_fields = ('name_first', 'name_second')

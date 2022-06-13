@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -7,11 +7,8 @@ from django.core.cache import cache
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.utils.translation import gettext_lazy as _
 
 from mainapp import tasks
-from mainapp import tasks as mainapp_tasks
-from django.contrib import messages
 from django.http.response import HttpResponseRedirect
 
 from mainapp.forms import CourseFeedbackForm
